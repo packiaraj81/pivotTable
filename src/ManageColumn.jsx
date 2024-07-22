@@ -1,7 +1,10 @@
+// ManageColumn.js
 import React, { useState, useContext } from 'react';
 import Multiselect from 'multiselect-react-dropdown';
 import './ManageColumn.css';
 import { ReportContext } from './ReportContext';
+import { FaTrash } from 'react-icons/fa';
+import Modal from './Modal'; // Import the Modal component
 
 const allOptions = [
   { value: 'team', label: 'Team' },
@@ -15,10 +18,14 @@ const allOptions = [
 ];
 
 const ManageColumn = () => {
-  const initialConfig = [{ selectedOptions: [] }];
+  const initialLevels = [{ selectedOptions: [] }];
 
-  const [levels, setLevels] = useState(initialConfig);
-  const {config, setConfig} = useContext(ReportContext);
+  const [levels, setLevels] = useState(initialLevels);
+  const { config, setConfig, initialConfig } = useContext(ReportContext);
+
+
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const addLevel = () => {
     setLevels([...levels, { selectedOptions: [] }]);
@@ -36,28 +43,27 @@ const ManageColumn = () => {
   };
 
   const resetLevels = () => {
-    setLevels(initialConfig);
-    setConfig({});
+    setLevels(initialLevels);
+    setConfig(initialConfig);
   };
 
   const applyChanges = () => {
-
-      const config = {
-        defaultReportApiUrl: "http://localhost:3001/api/data",
-        reportGroups: levels.map((level, index) => ({
-          level: index + 1,
-          groupFields: level.selectedOptions.map(option => ({
-            field: option.value,
-            header: option.label,
-          })),
-          fetchData: true,
-          apiUrl: "http://localhost:3001/api/data",
+    const config = {
+      defaultReportApiUrl: "http://localhost:3001/api/data",
+      reportGroups: levels.map((level, index) => ({
+        level: index + 1,
+        groupFields: level.selectedOptions.map(option => ({
+          field: option.value,
+          header: option.label,
         })),
-      };
-      setConfig(config);
+        fetchData: true,
+        apiUrl: "http://localhost:3001/api/data",
+      })),
+    };
+    setConfig(config);
+    setIsModalOpen(false);
   };
 
-  console.log("Applied Configuration:", config);
   const saveChanges = () => {
     console.log("Saved Configuration:");
   };
@@ -67,43 +73,56 @@ const ManageColumn = () => {
     return allOptions.filter(option => !usedOptions.includes(option.value));
   };
 
+  console.log("levels", levels);
+
   return (
     <div className="app-container">
       <div className="header">
+        <button onClick={() => setIsModalOpen(true)} className="open-column-button">Open Column</button>
         <button onClick={resetLevels} className="reset-button">Reset</button>
       </div>
-      {levels.map((level, index) => (
-        <div key={index} className="level">
-          <div className="level-header">
-            <h3>Level {index + 1}</h3>
-            <div className="left-menu">
-              <Multiselect
-                options={getRemainingOptions().concat(level.selectedOptions)}
-                selectedValues={level.selectedOptions}
-                onSelect={(selectedList) => handleChange(selectedList, index)}
-                onRemove={(selectedList) => handleChange(selectedList, index)}
-                displayValue="label"
-                showCheckbox
-              />
-              <button onClick={() => deleteLevel(index)} className="delete-button">Delete Level</button>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="modal-content">
+          {levels.map((level, index) => (
+            <div className="level-container" key={index}>
+              <div className="level">
+                <div className="level-header">
+                  <h3>Level {index + 1}</h3>
+                  <div className="right-menu">
+                    <Multiselect
+                      options={getRemainingOptions().concat(level.selectedOptions)}
+                      selectedValues={level.selectedOptions}
+                      onSelect={(selectedList) => handleChange(selectedList, index)}
+                      onRemove={(selectedList) => handleChange(selectedList, index)}
+                      displayValue="label"
+                      showCheckbox
+                    />
+                  </div>
+                </div>
+                <div className="table">
+                  {level.selectedOptions.map((option, i) => (
+                    <div key={i} className="cell">{option.label}</div>
+                  ))}
+                </div>
+              </div>
+              <span className="delete-button-container">
+                <button onClick={() => deleteLevel(index)} className="delete-button"><FaTrash /></button>
+              </span>
+            </div>
+          ))}
+          <div className="buttons-container">
+            <div className="left-buttons">
+              <button onClick={addLevel} disabled={getRemainingOptions().length === 0} className="button">Add Level</button>
+            </div>
+            <div className="right-buttons">
+              <button onClick={applyChanges} className={levels.every(level => level.selectedOptions.length === 0) ? "button-disabled" : "button"}
+                disabled = {levels.every(level => level.selectedOptions.length === 0)}
+              >Apply</button>
+              <button onClick={saveChanges} className="button">Save</button>
             </div>
           </div>
-          <div className="table">
-            {level.selectedOptions.map((option, i) => (
-              <div key={i} className="cell">{option.label}</div>
-            ))}
-          </div>
         </div>
-      ))}
-      <div className="buttons-container">
-        <div className="left-buttons">
-          <button onClick={addLevel} disabled={getRemainingOptions().length === 0} className="button">Add Level</button>
-        </div>
-        <div className="right-buttons">
-          <button onClick={applyChanges} className="button">Apply</button>
-          <button onClick={saveChanges} className="button">Save</button>
-        </div>
-      </div>
+      </Modal>
     </div>
   );
 };

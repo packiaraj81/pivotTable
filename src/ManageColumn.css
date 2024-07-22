@@ -1,6 +1,6 @@
 .app-container {
   padding: 20px;
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto;
   font-family: Arial, sans-serif;
 }
@@ -9,6 +9,8 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
+  width: 100%;
+  gap: 10px;
 }
 
 .reset-button {
@@ -19,14 +21,20 @@
   cursor: pointer;
   border-radius: 5px;
 }
-
+.level-container{
+  display: flex;
+  gap:10px;
+  width: 100%;
+}
 .level {
   margin-bottom: 20px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
+  width: 100%;
 }
+
 
 .level-header {
   display: flex;
@@ -35,21 +43,25 @@
   margin-bottom: 10px;
 }
 
-.left-menu {
+.right-menu {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 
-
+.delete-button-container{
+  display: flex;
+  align-items: center;
+}
 .delete-button {
   background-color: #f44336;
   color: white;
   border: none;
-  padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
+  padding: 5px 10px;
+  font-size: large;
 }
 
 .table {
@@ -71,6 +83,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  max-width: 950px;
 }
 
 .button {
@@ -80,6 +93,14 @@
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 20px;
+}
+.button-disabled {
+  background-color: grey;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: not-allowed;
 }
 
 .right-buttons .button:nth-child(1){
@@ -104,4 +125,14 @@
 /* Custom styles for multiselect */
 .chip, .singleChip {
   display: none;
+}
+
+/* model open column button */
+.open-column-button {
+background-color: #4CAF50;
+color: white;
+border: none;
+padding: 10px 20px;
+cursor: pointer;
+border-radius: 5px;
 }

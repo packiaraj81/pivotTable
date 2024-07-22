@@ -213,21 +213,47 @@ const DataTable = ({
   );
 };
 
+// const FlatReport = ({ data }) => (
+//   <table>
+//     <thead>
+//       <tr>
+//         {Object.keys(data[0] || {}).map((field) => (
+//           <th key={field}>{field}</th>
+//         ))}
+//       </tr>
+//     </thead>
+//     <tbody>
+//       {data.map((item, index) => (
+//         <tr key={index}>
+//           {Object.keys(item).map((field) => (
+//             <td key={field}>{item[field]}</td>
+//           ))}
+//         </tr>
+//       ))}
+//     </tbody>
+//   </table>
+// );
+
 const FlatReport = ({ data }) => (
   <table>
     <thead>
       <tr>
-        {Object.keys(data[0] || {}).map((field) => (
+        {Array.isArray(data) && data.length > 0 && Object.keys(data[0] || {}).map((field) => (
           <th key={field}>{field}</th>
         ))}
       </tr>
     </thead>
     <tbody>
-      {data.map((item, index) => (
+      {Array.isArray(data) && data.length > 0 && data.map((item, index) => (
         <tr key={index}>
-          {Object.keys(item).map((field) => (
-            <td key={field}>{item[field]}</td>
-          ))}
+          {Object.keys(item).map((field) => {
+            const value = item[field];
+            return (
+              <td key={field}>
+                {typeof value === 'object' ? JSON.stringify(value) : value}
+              </td>
+            );
+          })}
         </tr>
       ))}
     </tbody>
@@ -258,7 +284,7 @@ function PivotTable() {
       setDataSource(data.result);
     };
     fetchData();
-  }, []);
+  }, [config]);
 
   const handleCellClick = async (item, level, parentPayload = {}) => {
     const group = config.reportGroups.find(
