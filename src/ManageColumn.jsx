@@ -79,10 +79,11 @@ const ManageColumn = () => {
     <div className="app-container">
       <div className="header">
         <button onClick={() => setIsModalOpen(true)} className="open-column-button">Open Column</button>
-        <button onClick={resetLevels} className="reset-button">Reset</button>
+        
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="modal-content">
+        <button onClick={resetLevels} className="reset-button">Reset</button>
           {levels.map((level, index) => (
             <div className="level-container" key={index}>
               <div className="level">
