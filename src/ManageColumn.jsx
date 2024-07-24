@@ -6,6 +6,7 @@ import { ReportContext } from './ReportContext';
 import { FaTrash } from 'react-icons/fa';
 import Modal from './Modal'; // Import the Modal component
 
+//should be replaced by API call
 const allOptions = [
   { value: 'team', label: 'Team' },
   { value: 'region', label: 'Region' },
